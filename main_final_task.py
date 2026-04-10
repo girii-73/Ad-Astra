@@ -10,12 +10,12 @@ def is_position_empty(board, pos):
 def get_position(board, user):
     while True:
         try:
-            pos = int(input(f"U{user}_Pos (1-9): "))
+            pos = int(input(f"User{user}_Position: "))
             if pos < 1 or pos > 9:
-                print("Pos must be 1-9")
+                print("Position must be 1-9")
                 continue
             if not is_position_empty(board, pos):
-                print(f"Pos {pos} already filled")
+                print(f"Position {pos} already filled")
                 continue
             return pos
         except ValueError:
@@ -24,12 +24,12 @@ def get_position(board, user):
 def get_number(used_numbers, user):
     while True:
         try:
-            num = int(input(f"U{user}_Num (1-9): "))
+            num = int(input(f"User{user}_Number: "))
             if num < 1 or num > 9:
-                print("Num must be 1-9")
+                print("Number must be 1-9")
                 continue
             if num in used_numbers:
-                print(f"Num {num} already used")
+                print(f"Number {num} already used")
                 continue
             return num
         except ValueError:
@@ -55,7 +55,7 @@ def get_number_from_move(move_string):
     parts = move_string.split("_")
     return int(parts[1])
 
-def check_line_wins(a, b, c):
+def line_condition(a, b, c):
     if (a != 0 and b != 0 and c != 0):
         if (a + b + c == 15):
             return True
@@ -65,25 +65,15 @@ def check_line_wins(a, b, c):
 
 def check_win(board):
     nums = {pos: get_number_from_move(board[pos]) for pos in range(1, 10)}
-    if check_line_wins(nums[1], nums[2], nums[3]):
-        return True
-    if check_line_wins(nums[4], nums[5], nums[6]):
-        return True
-    if check_line_wins(nums[7], nums[8], nums[9]):
-        return True
-    if check_line_wins(nums[1], nums[4], nums[7]):
-        return True
-    if check_line_wins(nums[2], nums[5], nums[8]):
-        return True
-    if check_line_wins(nums[3], nums[6], nums[9]):
-        return True
-    if check_line_wins(nums[1], nums[5], nums[9]):
-        return True
-    if check_line_wins(nums[3], nums[5], nums[7]):
-        return True
+    winning_combos = [
+    (1, 2, 3),(4, 5, 6),(7, 8, 9),(1, 4, 7),(2, 5, 8),(3, 6, 9),(1, 5, 9),(3, 5, 7) ]
+    for combo in winning_combos:
+        if line_condition(nums[combo[0]], nums[combo[1]], nums[combo[2]]):
+            return True
     return False
 
 def play_game():
+    print("This Game is optimized for 3x3 board and numbers 1-9.")
     board = create_board()
     used_numbers = set()
     current_user = 1
